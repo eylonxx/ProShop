@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
@@ -17,7 +17,7 @@ const ProductScreen = () => {
       setProduct(data);
     };
     fetchProduct();
-  }, []);
+  }, [params]);
 
   return (
     <>
