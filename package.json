@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec ts-node backend/server.ts"
+    "start": "nodemon --exec ts-node backend/server.ts",
+    "data:import": "ts-node backend/seeder.ts",
+    "data:destroy": "ts-node backend/seeder.ts -d"
   },
   "repository": {
     "type": "git",
@@ -18,8 +20,10 @@
   },
   "homepage": "https://github.com/eylonxx/ProShop#readme",
   "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/colors": "^1.2.1",
     "@types/express": "^4.17.13",
+    "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",

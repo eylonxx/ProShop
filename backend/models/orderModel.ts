@@ -1,13 +1,12 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Types } from 'mongoose';
 import Product from './productModel';
-import User from './userModel';
 
 interface Order {
-  user: User;
-  orderItems: [{ name: string; qty: number; image: string; price: number; product: Product }];
-  shippingAddress: { address: string; city: string; postalCode: string; country: string };
+  user: Types.ObjectId;
+  orderItems: OrderItem[];
+  shippingAddress: ShippingAddress;
   paymentMethod: String;
-  paymentResult: { id: String; status: String; update_time: string; email_address: string };
+  paymentResult: PaymentResult;
   taxPrice: number;
   shippingPrice: number;
   totalPrice: number;
@@ -15,6 +14,28 @@ interface Order {
   paidAt: Date;
   isDelivered: boolean;
   deliveredAt: Date;
+}
+
+interface ShippingAddress {
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
+interface OrderItem {
+  name: string;
+  qty: number;
+  image: string;
+  price: number;
+  product: Types.ObjectId;
+}
+
+interface PaymentResult {
+  id: String;
+  status: String;
+  update_time: string;
+  email_address: string;
 }
 
 const orderSchema = new Schema<Order>(

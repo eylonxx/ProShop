@@ -1,5 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
-import User from './userModel';
+import { Schema, model, Types } from 'mongoose';
 
 interface Review {
   name: string;
@@ -8,7 +7,7 @@ interface Review {
 }
 
 interface Product {
-  user: User;
+  user: Types.ObjectId;
   name: string;
   image: string;
   brand: string;
