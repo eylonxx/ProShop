@@ -4,11 +4,14 @@ import { Col, Row } from 'react-bootstrap';
 import Product from '../components/Product';
 import { ProductType } from '../types';
 import { getProducts } from '../slices/productSlice';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 
 const HomeScreen = () => {
   const dispatch = useDispatch<any>();
   const productList = useSelector((state: any) => state.products.productList);
   const isLoading = useSelector((state: any) => state.products.isLoading);
+  const error = useSelector((state: any) => state.products.error);
 
   useEffect(() => {
     dispatch(getProducts());
@@ -17,7 +20,9 @@ const HomeScreen = () => {
     <>
       <h1>Latest products</h1>
       {isLoading ? (
-        <h3>loading!!</h3>
+        <Loader />
+      ) : error ? (
+        <Message variant="danger" children={error} />
       ) : (
         <Row>
           {productList.map((product: ProductType) => (

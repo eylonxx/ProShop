@@ -7,30 +7,53 @@ export const getProducts = createAsyncThunk('products/getProducts', async () => 
   return data;
 });
 
+export const getProductDetails = createAsyncThunk('products/getProductDetails', async (id: string) => {
+  const { data } = await axios.get(`/api/products/${id}`);
+  return data;
+});
+
 interface ProductState {
   productList: ProductType[];
+  product: any;
   isLoading: boolean;
+  error: any;
 }
 const initialState: ProductState = {
   productList: [],
+  product: {},
   isLoading: false,
+  error: null,
 };
 
 const productSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {},
+
   extraReducers: (builder) => {
     builder.addCase(getProducts.rejected, (state, action) => {
       state.isLoading = false;
       state.productList = [];
-      console.log('in rejected products');
+      state.error = action.error;
     });
     builder.addCase(getProducts.fulfilled, (state, action: PayloadAction<any>) => {
       state.isLoading = false;
       state.productList = action.payload;
     });
     builder.addCase(getProducts.pending, (state) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(getProductDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.product = {};
+      state.error = action.error;
+    });
+    builder.addCase(getProductDetails.fulfilled, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.product = action.payload;
+    });
+    builder.addCase(getProductDetails.pending, (state) => {
       state.isLoading = true;
     });
   },
