@@ -14,13 +14,14 @@ export const getProductDetails = createAsyncThunk('products/getProductDetails', 
 
 interface ProductState {
   productList: ProductType[];
-  product: any;
+  product: ProductType;
   isLoading: boolean;
   error: any;
 }
+
 const initialState: ProductState = {
   productList: [],
-  product: {},
+  product: null,
   isLoading: false,
   error: null,
 };
@@ -46,7 +47,7 @@ const productSlice = createSlice({
 
     builder.addCase(getProductDetails.rejected, (state, action) => {
       state.isLoading = false;
-      state.product = {};
+      state.product = null;
       state.error = action.error;
     });
     builder.addCase(getProductDetails.fulfilled, (state, action: PayloadAction<any>) => {

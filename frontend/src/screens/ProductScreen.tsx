@@ -15,6 +15,8 @@ const ProductScreen = () => {
   const isLoading = useSelector((state: any) => state.products.isLoading);
   const error = useSelector((state: any) => state.products.error);
 
+  const [qty, setQty] = useState(0);
+
   useEffect(() => {
     dispatch(getProductDetails(params.id));
   }, [dispatch, params.id]);
@@ -24,7 +26,7 @@ const ProductScreen = () => {
       <Link to="/" className="btn btn-light my-3">
         Go Back
       </Link>
-      {isLoading ? (
+      {isLoading || product === null ? (
         <Loader />
       ) : error ? (
         <Message variant="danger" children={error} />

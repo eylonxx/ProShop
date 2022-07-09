@@ -16,6 +16,7 @@ const HomeScreen = () => {
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
+
   return (
     <>
       <h1>Latest products</h1>
