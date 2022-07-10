@@ -10,3 +10,12 @@ export interface ProductType {
   rating: number;
   numReviews: number;
 }
+
+export interface CartItemType {
+  product: string;
+  name: string;
+  image: string;
+  price: number;
+  countInStock: number;
+  qty: number;
+}
