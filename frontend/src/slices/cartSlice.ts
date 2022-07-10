@@ -8,24 +8,17 @@ interface addToCartParams {
 }
 
 export const addToCart = createAsyncThunk('cart/addToCart', async (addToCartParams: addToCartParams) => {
-  try {
-    const { data } = await axios.get(`/api/products/${addToCartParams.id}`);
-    console.log(data);
+  const { data } = await axios.get(`/api/products/${addToCartParams.id}`);
 
-    const item: CartItemType = {
-      product: data._id,
-      name: data.name,
-      image: data.image,
-      price: data.price,
-      countInStock: data.countInStock,
-      qty: addToCartParams.qty,
-    };
-    console.log(item);
-
-    return item;
-  } catch (error) {
-    console.log(error);
-  }
+  const item: CartItemType = {
+    product: data._id,
+    name: data.name,
+    image: data.image,
+    price: data.price,
+    countInStock: data.countInStock,
+    qty: addToCartParams.qty,
+  };
+  return item;
 });
 
 interface CartState {
@@ -40,22 +33,19 @@ const initialState: CartState = {
   error: null,
 };
 
-const productSlice = createSlice({
+const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {},
 
   extraReducers: (builder) => {
     builder.addCase(addToCart.rejected, (state, action) => {
-      console.log(action);
-
       state.isLoading = false;
       state.cartItems = [...state.cartItems];
       state.error = action.error;
     });
 
     builder.addCase(addToCart.fulfilled, (state, action: PayloadAction<any>) => {
-      //check if exists
       const item = action.payload;
       const existItem: CartItemType = state.cartItems.find((p: CartItemType) => {
         return p.product === item.product;
@@ -73,11 +63,9 @@ const productSlice = createSlice({
     });
 
     builder.addCase(addToCart.pending, (state) => {
-      console.log('loading');
-
       state.isLoading = true;
     });
   },
 });
 
-export default productSlice.reducer;
+export default cartSlice.reducer;
