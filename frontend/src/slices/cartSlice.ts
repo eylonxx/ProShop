@@ -36,7 +36,14 @@ const initialState: CartState = {
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
-  reducers: {},
+  reducers: {
+    removeFromCart: (state, action) => {
+      console.log(action.payload);
+
+      state.cartItems = state.cartItems.filter((x) => x.product !== action.payload);
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+    },
+  },
 
   extraReducers: (builder) => {
     builder.addCase(addToCart.rejected, (state, action) => {
@@ -67,5 +74,7 @@ const cartSlice = createSlice({
     });
   },
 });
+
+export const { removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

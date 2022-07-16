@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children } from 'react';
 import { Alert } from 'react-bootstrap';
 
 interface thunkError {
@@ -9,12 +9,18 @@ interface thunkError {
 }
 
 interface MessageProps {
-  variant: string;
-  children: thunkError;
+  variant?: string;
+  errorMsg?: thunkError;
+  text?: string;
+  children?: JSX.Element;
 }
 
-const Message = ({ variant, children }: MessageProps) => {
-  return <Alert variant={variant}>{children.message}</Alert>;
+const Message = ({ variant, errorMsg, text, children }: MessageProps) => {
+  return (
+    <Alert variant={variant}>
+      {errorMsg?.message} {text} {children}
+    </Alert>
+  );
 };
 Message.defaultProps = {
   variant: 'info',
