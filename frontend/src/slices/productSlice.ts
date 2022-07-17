@@ -7,10 +7,18 @@ export const getProducts = createAsyncThunk('products/getProducts', async () => 
   return data;
 });
 
-export const getProductDetails = createAsyncThunk('products/getProductDetails', async (id: string) => {
-  const { data } = await axios.get(`/api/products/${id}`);
-  return data;
-});
+export const getProductDetails = createAsyncThunk(
+  'products/getProductDetails',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`/api/products/${id}`);
+      return data;
+    } catch (error: any) {
+      if (!error.response) throw error;
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 interface ProductState {
   productList: ProductType[];
@@ -35,7 +43,7 @@ const productSlice = createSlice({
     builder.addCase(getProducts.rejected, (state, action) => {
       state.isLoading = false;
       state.productList = [];
-      state.error = action.error;
+      state.error = action.payload;
     });
     builder.addCase(getProducts.fulfilled, (state, action: PayloadAction<any>) => {
       state.isLoading = false;

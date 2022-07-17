@@ -1,4 +1,3 @@
-import React, { Children } from 'react';
 import { Alert } from 'react-bootstrap';
 
 interface thunkError {
