@@ -1,10 +1,12 @@
 import { Schema, model } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 interface User {
   name: string;
   email: string;
   password: string;
   isAdmin?: boolean;
+  matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
 const userSchema = new Schema<User>(
@@ -18,6 +20,11 @@ const userSchema = new Schema<User>(
     timestamps: true,
   }
 );
+
+userSchema.methods.matchPassword = async function (enteredPassword: string): Promise<boolean> {
+  let isValid = await bcrypt.compare(enteredPassword, this.password);
+  return isValid;
+};
 
 const User = model<User>('User', userSchema);
 
