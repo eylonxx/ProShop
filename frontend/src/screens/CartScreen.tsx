@@ -14,7 +14,6 @@ const CartScreen = () => {
   const [searchParams] = useSearchParams();
 
   const cartItems = useSelector((state: any) => state.cart.cartItems);
-  console.log(cartItems);
 
   const id = params.id;
   const qty = +searchParams.get('qty');
@@ -27,12 +26,10 @@ const CartScreen = () => {
 
   const removeFromCartHandler = (id: string) => {
     dispatch(removeFromCart(id));
-    console.log('remove');
   };
 
   const checkoutHandler = () => {
     navigate('/login?redirect=shipping');
-    console.log('checkout');
   };
 
   return (

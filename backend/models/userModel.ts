@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { NextFunction } from 'express';
 
 interface User {
   name: string;
@@ -25,6 +26,14 @@ userSchema.methods.matchPassword = async function (enteredPassword: string): Pro
   let isValid = await bcrypt.compare(enteredPassword, this.password);
   return isValid;
 };
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
 const User = model<User>('User', userSchema);
 

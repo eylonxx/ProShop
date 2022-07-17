@@ -38,8 +38,6 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     removeFromCart: (state, action) => {
-      console.log(action.payload);
-
       state.cartItems = state.cartItems.filter((x) => x.product !== action.payload);
       localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
     },
