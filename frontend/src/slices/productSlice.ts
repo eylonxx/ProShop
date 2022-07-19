@@ -20,7 +20,7 @@ export const getProductDetails = createAsyncThunk(
   }
 );
 
-interface ProductState {
+export interface ProductState {
   productList: ProductType[];
   product: ProductType;
   isLoading: boolean;

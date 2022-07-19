@@ -21,7 +21,7 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (addToCartPara
   return item;
 });
 
-interface CartState {
+export interface CartState {
   cartItems: CartItemType[];
   isLoading: boolean;
   error: any;

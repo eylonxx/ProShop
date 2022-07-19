@@ -5,14 +5,17 @@ import { useNavigate, Link } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { userLogin } from '../slices/userSlice';
+import { userLogin, userRegister } from '../slices/userSlice';
 
-const LoginScreen = () => {
+const RegisterScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<any>();
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState(null);
 
   const userInfo = useSelector((state: any) => state.user.userInfo);
   const isLoading = useSelector((state: any) => state.user.isLoading);
@@ -28,15 +31,30 @@ const LoginScreen = () => {
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
-    dispatch(userLogin({ email, password }));
+    //dispatch register
+    if (password !== confirmPassword) {
+      setMessage('Passwords do not match');
+    } else {
+      dispatch(userRegister({ name, email, password }));
+    }
   };
 
   return (
     <FormContainer>
-      <h1>Sign In</h1>
+      <h1>Sign Up</h1>
       {error && <Message variant="danger" errorMsg={error} />}
       {isLoading && <Loader />}
       <Form onSubmit={submitHandler}>
+        <FormGroup className="py-3" controlId="name">
+          <FormLabel>Name</FormLabel>
+          <Form.Control
+            type="name"
+            placeholder="Enter name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </FormGroup>
+
         <FormGroup className="py-3" controlId="email">
           <FormLabel>Email Address</FormLabel>
           <Form.Control
@@ -56,17 +74,28 @@ const LoginScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </FormGroup>
+
+        <FormGroup className="py-3" controlId="confirmPassword">
+          <FormLabel>Confirm Password</FormLabel>
+          <Form.Control
+            type="password"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          ></Form.Control>
+        </FormGroup>
+
         <Button className="my-3" type="submit" variant="primary">
-          Sign In
+          Register
         </Button>
       </Form>
       <Row className="py-3">
         <Col>
-          New Customer? <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Register</Link>
+          Have an Account? <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>Login</Link>
         </Col>
       </Row>
     </FormContainer>
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;
