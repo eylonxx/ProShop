@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { getUserDetails, userLogin, userRegister } from '../slices/userSlice';
+import { getUserDetails, userLogin, userRegister, userUpdateProfile } from '../slices/userSlice';
 
 const ProfileScreen = () => {
   const navigate = useNavigate();
@@ -17,9 +17,8 @@ const ProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
 
-  const userDetails = useSelector((state: any) => {
-    return state.user.userDetails;
-  });
+  const userDetails = useSelector((state: any) => state.user.userDetails);
+  const updateSuccess = useSelector((state: any) => state.user.userUpdateSuccess);
 
   const userInfo = useSelector((state: any) => state.user.userInfo);
 
@@ -42,11 +41,10 @@ const ProfileScreen = () => {
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
-    //dispatch register
     if (password !== confirmPassword) {
       setMessage('Passwords do not match');
     } else {
-      //dispatch update profile
+      dispatch(userUpdateProfile({ id: userDetails._id, name: name, email: email, password: password }));
     }
   };
 
@@ -55,6 +53,7 @@ const ProfileScreen = () => {
       <Col md={3}>
         <h2>User Profile</h2>
         {error && <Message variant="danger" errorMsg={error} />}
+        {updateSuccess && <Message variant="success" children={<span>Profile Updated</span>}></Message>}
         {isLoading && <Loader />}
         <Form onSubmit={submitHandler}>
           <FormGroup className="py-3" controlId="name">

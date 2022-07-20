@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { User } from '../types';
 import { GlobalSlice } from './types';
 
 interface userLoginParams {
@@ -35,9 +36,6 @@ export const getUserDetails = createAsyncThunk<any, userDetailsParams, { state: 
   async (userDetailsParams, { getState, rejectWithValue }) => {
     try {
       const { token } = getState().user.userInfo;
-
-      // const { token } = getState();
-
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -47,6 +45,26 @@ export const getUserDetails = createAsyncThunk<any, userDetailsParams, { state: 
 
       const { data } = await axios.get(`/api/users/${userDetailsParams.id}`, config);
 
+      return data;
+    } catch (error: any) {
+      if (!error.response) throw error;
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const userUpdateProfile = createAsyncThunk<any, User, { state: GlobalSlice }>(
+  'user/userUpdateProfile',
+  async (userObject, { getState, rejectWithValue }) => {
+    const { token } = getState().user.userInfo;
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const { data } = await axios.put(`/api/users/profile`, userObject, config);
       return data;
     } catch (error: any) {
       if (!error.response) throw error;
@@ -93,6 +111,7 @@ interface userDetails {
 export interface userState {
   userInfo: userInfo;
   userDetails: userDetails;
+  userUpdateSuccess: boolean;
   isLoading: boolean;
   error: any;
 }
@@ -100,6 +119,7 @@ export interface userState {
 const initialState: userState = {
   userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
   userDetails: null,
+  userUpdateSuccess: false,
   isLoading: false,
   error: null,
 };
@@ -157,6 +177,24 @@ const userSlice = createSlice({
     });
 
     builder.addCase(getUserDetails.pending, (state, action) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(userUpdateProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.userUpdateSuccess = false;
+      state.error = action.payload;
+    });
+
+    builder.addCase(userUpdateProfile.fulfilled, (state, action: PayloadAction<any>) => {
+      state.isLoading = false;
+      state.userInfo = action.payload;
+      state.userDetails.email = action.payload.email;
+      state.userDetails.name = action.payload.name;
+      state.userUpdateSuccess = true;
+    });
+
+    builder.addCase(userUpdateProfile.pending, (state, action) => {
       state.isLoading = true;
     });
   },

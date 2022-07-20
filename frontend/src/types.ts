@@ -19,3 +19,10 @@ export interface CartItemType {
   countInStock: number;
   qty: number;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+}
