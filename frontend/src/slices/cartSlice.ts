@@ -21,14 +21,23 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (addToCartPara
   return item;
 });
 
+export interface shippingAddressType {
+  address: string;
+  city: string;
+  country: string;
+  postalCode: number;
+}
+
 export interface CartState {
   cartItems: CartItemType[];
+  shippingAddress: shippingAddressType;
   isLoading: boolean;
   error: any;
 }
 
 const initialState: CartState = {
   cartItems: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
+  shippingAddress: localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')) : {},
   isLoading: false,
   error: null,
 };
@@ -40,6 +49,10 @@ const cartSlice = createSlice({
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter((x) => x.product !== action.payload);
       localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+    },
+    saveShippingAddress: (state, action) => {
+      state.shippingAddress = action.payload;
+      localStorage.setItem('shippingAddress', JSON.stringify(state.shippingAddress));
     },
   },
 
@@ -73,6 +86,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { removeFromCart } = cartSlice.actions;
+export const { removeFromCart, saveShippingAddress } = cartSlice.actions;
 
 export default cartSlice.reducer;
