@@ -3,6 +3,7 @@ import { Button, Form, FormGroup, FormLabel } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import CheckoutSteps from '../components/CheckoutSteps';
 import FormContainer from '../components/FormContainer';
 import { saveShippingAddress } from '../slices/cartSlice';
 
@@ -19,13 +20,13 @@ const ShippingScreen = () => {
 
   const submitHandler = (e: any) => {
     e.preventDefault();
-    console.log('submit!');
     dispatch(saveShippingAddress({ address, city, postalCode, country }));
     navigate('/payment');
   };
 
   return (
     <FormContainer>
+      <CheckoutSteps step1 step2 />
       <h1>Shipping</h1>
       <Form onSubmit={submitHandler}>
         <FormGroup className="py-3" controlId="address">
@@ -72,7 +73,7 @@ const ShippingScreen = () => {
           ></Form.Control>
         </FormGroup>
 
-        <Button type="submit" variant="primary">
+        <Button className="my-3" type="submit" variant="primary">
           Continue
         </Button>
       </Form>

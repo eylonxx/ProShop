@@ -21,8 +21,13 @@ const LoginScreen = () => {
   const redirect = window.location.search ? window.location.search.split('=')[1] : '/';
 
   useEffect(() => {
+    //fix double /
     if (userInfo) {
-      navigate(`/${redirect}`);
+      if (redirect === '/') {
+        navigate(`${redirect}`);
+      } else {
+        navigate(`/${redirect}`);
+      }
     }
   }, [userInfo, redirect, navigate]);
 

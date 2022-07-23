@@ -31,6 +31,7 @@ export interface shippingAddressType {
 export interface CartState {
   cartItems: CartItemType[];
   shippingAddress: shippingAddressType;
+  paymentMethod: string;
   isLoading: boolean;
   error: any;
 }
@@ -38,6 +39,7 @@ export interface CartState {
 const initialState: CartState = {
   cartItems: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
   shippingAddress: localStorage.getItem('shippingAddress') ? JSON.parse(localStorage.getItem('shippingAddress')) : {},
+  paymentMethod: localStorage.getItem('paymentMethod') ? JSON.parse(localStorage.getItem('paymentMethod')) : '',
   isLoading: false,
   error: null,
 };
@@ -53,6 +55,10 @@ const cartSlice = createSlice({
     saveShippingAddress: (state, action) => {
       state.shippingAddress = action.payload;
       localStorage.setItem('shippingAddress', JSON.stringify(state.shippingAddress));
+    },
+    savePaymentMethod: (state, action) => {
+      state.paymentMethod = action.payload;
+      localStorage.setItem('paymentMethod', JSON.stringify(state.paymentMethod));
     },
   },
 
@@ -86,6 +92,6 @@ const cartSlice = createSlice({
   },
 });
 
-export const { removeFromCart, saveShippingAddress } = cartSlice.actions;
+export const { removeFromCart, saveShippingAddress, savePaymentMethod } = cartSlice.actions;
 
 export default cartSlice.reducer;
