@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Card, Col, Image, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps';
 import Message from '../components/Message';
+import { createOrder } from '../slices/orderSlice';
 import { CartItemType } from '../types';
 
 const PlaceOrderScreen = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
   const cart = useSelector((state: any) => state.cart);
 
   //calcs
@@ -26,9 +28,32 @@ const PlaceOrderScreen = () => {
 
   const total: string = addDecimals(Number((Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)));
 
+  const createdOrder = useSelector((state: any) => state.order.order);
+  const isLoading = useSelector((state: any) => state.order.isLoading);
+  const success = useSelector((state: any) => state.order.success);
+  const error = useSelector((state: any) => state.order.error);
+
+  console.log(createdOrder);
+
   const placeOrderHandler = () => {
-    console.log('hi');
+    dispatch(
+      createOrder({
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: itemsPrice,
+        shippingPrice: shippingPrice,
+        taxPrice: taxPrice,
+        total: total,
+      })
+    );
   };
+
+  useEffect(() => {
+    if (success) {
+      navigate(`/order/${createdOrder._id}`);
+    }
+  }, [success, navigate]);
 
   return (
     <>
@@ -107,6 +132,7 @@ const PlaceOrderScreen = () => {
                   <Col>${total}</Col>
                 </Row>
               </ListGroupItem>
+              <ListGroupItem>{error && <Message errorMsg={error} />}</ListGroupItem>
               <ListGroupItem>
                 <div className="d-grid">
                   <Button

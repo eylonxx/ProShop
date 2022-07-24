@@ -7,3 +7,9 @@ export interface GlobalSlice {
   product: ProductState;
   user: userState;
 }
+export interface shippingAddressType {
+  address: string;
+  city: string;
+  country: string;
+  postalCode: number;
+}

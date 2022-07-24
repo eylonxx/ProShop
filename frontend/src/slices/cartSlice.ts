@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { CartItemType } from '../types';
+import { shippingAddressType } from './types';
 
 interface addToCartParams {
   id: string;
@@ -20,13 +21,6 @@ export const addToCart = createAsyncThunk('cart/addToCart', async (addToCartPara
   };
   return item;
 });
-
-export interface shippingAddressType {
-  address: string;
-  city: string;
-  country: string;
-  postalCode: number;
-}
 
 export interface CartState {
   cartItems: CartItemType[];
