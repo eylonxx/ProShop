@@ -29,13 +29,12 @@ const PlaceOrderScreen = () => {
   const total: string = addDecimals(Number((Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)));
 
   const createdOrder = useSelector((state: any) => state.order.order);
-  const isLoading = useSelector((state: any) => state.order.isLoading);
   const success = useSelector((state: any) => state.order.success);
   const error = useSelector((state: any) => state.order.error);
 
-  console.log(createdOrder);
-
   const placeOrderHandler = () => {
+    console.log(itemsPrice);
+
     dispatch(
       createOrder({
         orderItems: cart.cartItems,
@@ -44,7 +43,7 @@ const PlaceOrderScreen = () => {
         itemsPrice: itemsPrice,
         shippingPrice: shippingPrice,
         taxPrice: taxPrice,
-        total: total,
+        totalPrice: total,
       })
     );
   };

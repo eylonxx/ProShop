@@ -7,9 +7,10 @@ interface Order {
   shippingAddress: ShippingAddress;
   paymentMethod: String;
   paymentResult: PaymentResult;
-  taxPrice: number;
-  shippingPrice: number;
-  totalPrice: number;
+  taxPrice: string;
+  itemsPrice: string;
+  shippingPrice: string;
+  totalPrice: string;
   isPaid: boolean;
   paidAt: Date;
   isDelivered: boolean;
@@ -63,9 +64,10 @@ const orderSchema = new Schema<Order>(
       update_time: { type: String },
       email_address: { type: String },
     },
-    taxPrice: { type: Number, required: true, default: 0.0 },
-    shippingPrice: { type: Number, required: true, default: 0.0 },
-    totalPrice: { type: Number, required: true, default: 0.0 },
+    taxPrice: { type: String, required: true },
+    shippingPrice: { type: String, required: true },
+    itemsPrice: { type: String, required: true },
+    totalPrice: { type: String, required: true },
     isPaid: { type: Boolean, required: true, default: false },
     paidAt: { type: Date },
     isDelivered: { type: Boolean, required: true, default: false },
