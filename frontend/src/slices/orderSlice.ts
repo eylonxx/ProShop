@@ -10,7 +10,7 @@ export interface orderParams {
   itemsPrice: string;
   shippingPrice: string;
   taxPrice: string;
-  total: string;
+  totalPrice: string;
 }
 
 export const createOrder = createAsyncThunk<any, orderParams, { state: GlobalSlice }>(
@@ -35,6 +35,27 @@ export const createOrder = createAsyncThunk<any, orderParams, { state: GlobalSli
   }
 );
 
+export const getOrderDetails = createAsyncThunk<any, string, { state: GlobalSlice }>(
+  'order/getOrderDetails',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { token } = getState().user.userInfo;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/orders/${id}`, config);
+
+      return data;
+    } catch (error: any) {
+      if (!error.response) throw error;
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export interface orderState {
   order: any;
   isLoading: boolean;
@@ -43,7 +64,7 @@ export interface orderState {
 }
 
 const initialState: orderState = {
-  order: {},
+  order: null,
   isLoading: false,
   success: false,
   error: null,
@@ -67,6 +88,20 @@ const orderSlice = createSlice({
     });
 
     builder.addCase(createOrder.pending, (state) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(getOrderDetails.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+
+    builder.addCase(getOrderDetails.fulfilled, (state, action: PayloadAction<any>) => {
+      state.order = action.payload;
+      state.isLoading = false;
+    });
+
+    builder.addCase(getOrderDetails.pending, (state) => {
       state.isLoading = true;
     });
   },
