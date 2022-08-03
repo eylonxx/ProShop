@@ -33,8 +33,6 @@ const PlaceOrderScreen = () => {
   const error = useSelector((state: any) => state.order.error);
 
   const placeOrderHandler = () => {
-    console.log(itemsPrice);
-
     dispatch(
       createOrder({
         orderItems: cart.cartItems,

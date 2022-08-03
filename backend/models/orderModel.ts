@@ -12,7 +12,7 @@ interface Order {
   shippingPrice: string;
   totalPrice: string;
   isPaid: boolean;
-  paidAt: Date;
+  paidAt: Number;
   isDelivered: boolean;
   deliveredAt: Date;
 }

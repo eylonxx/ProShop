@@ -13,6 +13,18 @@ export interface orderParams {
   totalPrice: string;
 }
 
+export interface paymentResultParams {
+  id: string;
+  status: string;
+  update_time: string;
+  email_address: string;
+}
+
+export interface orderPayParams {
+  orderId: string;
+  paymentResult: paymentResultParams;
+}
+
 export const createOrder = createAsyncThunk<any, orderParams, { state: GlobalSlice }>(
   'order/createOrder',
   async (order, { getState, rejectWithValue }) => {
@@ -26,6 +38,32 @@ export const createOrder = createAsyncThunk<any, orderParams, { state: GlobalSli
       };
 
       const { data } = await axios.post(`/api/orders/`, order, config);
+
+      return data;
+    } catch (error: any) {
+      if (!error.response) throw error;
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const orderPay = createAsyncThunk<any, orderPayParams, { state: GlobalSlice }>(
+  'order/orderPay',
+  async (orderPayObject, { getState, rejectWithValue }) => {
+    try {
+      const { token } = getState().user.userInfo;
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await axios.put(
+        `/api/orders/${orderPayObject.orderId}/pay`,
+        orderPayObject.paymentResult,
+        config
+      );
 
       return data;
     } catch (error: any) {
@@ -73,7 +111,11 @@ const initialState: orderState = {
 const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {},
+  reducers: {
+    orderPayReset: (state) => {
+      state.success = false;
+    },
+  },
 
   extraReducers: (builder) => {
     builder.addCase(createOrder.rejected, (state, action) => {
@@ -104,7 +146,21 @@ const orderSlice = createSlice({
     builder.addCase(getOrderDetails.pending, (state) => {
       state.isLoading = true;
     });
+
+    builder.addCase(orderPay.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error;
+    });
+
+    builder.addCase(orderPay.fulfilled, (state, action: PayloadAction<any>) => {
+      state.success = true;
+      state.isLoading = false;
+    });
+
+    builder.addCase(orderPay.pending, (state) => {
+      state.isLoading = true;
+    });
   },
 });
-
+export const { orderPayReset } = orderSlice.actions;
 export default orderSlice.reducer;

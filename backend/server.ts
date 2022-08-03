@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
 import colors from 'colors';
@@ -15,6 +15,8 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
+
+app.get('/api/config/paypal', (req: Request, res: Response) => res.send(process.env.PAYPAL_CLIENT_ID));
 
 app.use(notFound);
 app.use(errorHandler);
