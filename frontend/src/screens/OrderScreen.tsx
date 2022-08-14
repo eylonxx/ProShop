@@ -78,14 +78,14 @@ const OrderScreen = () => {
                     <a href={`mailto:${orderDetails.user.email}`}>{orderDetails.user.email}</a>
                   </p>
                   <p>
-                    <strong>Address:</strong>
+                    <strong>Address: </strong>
                     {orderDetails.shippingAddress.address}, {orderDetails.shippingAddress.city}
                     {orderDetails.shippingAddress.postalCode}, {orderDetails.shippingAddress.country}
                   </p>
                   {orderDetails.isDelivered ? (
                     <Message variant="success" children={<span>Paid on {orderDetails.deliveredAt}</span>}></Message>
                   ) : (
-                    <Message variant="danger" children={<span>Not paid</span>}></Message>
+                    <Message variant="danger" children={<span>Not delivered</span>}></Message>
                   )}
                 </ListGroupItem>
 

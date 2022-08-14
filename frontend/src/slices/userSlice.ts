@@ -131,6 +131,7 @@ const userSlice = createSlice({
     logout: (state) => {
       localStorage.removeItem('userInfo');
       state.userInfo = null;
+      state.userDetails = null;
       state.isLoading = false;
     },
   },

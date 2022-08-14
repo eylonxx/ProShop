@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { myOrderList } from '../slices/orderSlice';
 import { logout } from '../slices/userSlice';
 
 const Header = () => {
@@ -12,6 +13,8 @@ const Header = () => {
 
   const logoutHandler = () => {
     dispatch(logout());
+    //to reset my order list on profile page, cant do through redux
+    dispatch(myOrderList());
     navigate('/login');
   };
   return (

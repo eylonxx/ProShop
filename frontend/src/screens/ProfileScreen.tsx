@@ -1,10 +1,12 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { Button, Col, Form, FormGroup, FormLabel, Row } from 'react-bootstrap';
+import { Button, Col, Form, FormGroup, FormLabel, Row, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import FormContainer from '../components/FormContainer';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { listMyOrders, orderParams } from '../slices/orderSlice';
 import { getUserDetails, userLogin, userRegister, userUpdateProfile } from '../slices/userSlice';
 
 const ProfileScreen = () => {
@@ -19,11 +21,14 @@ const ProfileScreen = () => {
 
   const userDetails = useSelector((state: any) => state.user.userDetails);
   const updateSuccess = useSelector((state: any) => state.user.userUpdateSuccess);
-
   const userInfo = useSelector((state: any) => state.user.userInfo);
 
-  const isLoading = useSelector((state: any) => state.user.isLoading);
-  const error = useSelector((state: any) => state.user.error);
+  const myOrders = useSelector((state: any) => state.order.orders);
+
+  const isLoadingUser = useSelector((state: any) => state.user.isLoading);
+  const isLoadingMyOrders = useSelector((state: any) => state.order.isLoading);
+  const userError = useSelector((state: any) => state.user.error);
+  const myOrdersError = useSelector((state: any) => state.order.error);
 
   useEffect(() => {
     if (!userInfo) {
@@ -31,8 +36,8 @@ const ProfileScreen = () => {
     } else {
       if (!userDetails) {
         dispatch(getUserDetails({ id: 'profile' }));
+        dispatch(listMyOrders(name));
       } else {
-        console.log('setting');
         setName(userDetails.name);
         setEmail(userDetails.email);
       }
@@ -52,9 +57,9 @@ const ProfileScreen = () => {
     <Row>
       <Col md={3}>
         <h2>User Profile</h2>
-        {error && <Message variant="danger" errorMsg={error} />}
+        {userError && <Message variant="danger" errorMsg={userError} />}
         {updateSuccess && <Message variant="success" children={<span>Profile Updated</span>}></Message>}
-        {isLoading && <Loader />}
+        {isLoadingUser && <Loader />}
         <Form onSubmit={submitHandler}>
           <FormGroup className="py-3" controlId="name">
             <FormLabel>Name</FormLabel>
@@ -103,6 +108,58 @@ const ProfileScreen = () => {
       </Col>
       <Col md={9}>
         <h2>My Orders</h2>
+        {isLoadingMyOrders ? (
+          <Loader />
+        ) : myOrdersError ? (
+          <Message variant="danger" children={<span>{myOrdersError}</span>}></Message>
+        ) : (
+          <Table striped bordered hover responsive className="table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>DATE</th>
+                <th>TOTAL</th>
+                <th>PAID</th>
+                <th>DELIVERED</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {myOrders &&
+                myOrders.map((order: any) => {
+                  console.log(order);
+                  return (
+                    <tr key={order._id}>
+                      <td>{order._id}</td>
+                      <td>{order.createdAt.substring(0, 10)}</td>
+                      <td>{order.totalPrice}</td>
+                      <td>
+                        {order.isPaid ? (
+                          order.paidAt.substring(0, 10)
+                        ) : (
+                          <i className="fas fa-times" style={{ color: 'red' }}></i>
+                        )}
+                      </td>
+                      <td>
+                        {order.isDelivered ? (
+                          order.deliveredAt.substring(0, 10)
+                        ) : (
+                          <i className="fas fa-times" style={{ color: 'red' }}></i>
+                        )}
+                      </td>
+                      <td>
+                        <LinkContainer to={`/order/${order._id}`}>
+                          <Button className="btn-sm" variant="light">
+                            Details
+                          </Button>
+                        </LinkContainer>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </Table>
+        )}
       </Col>
     </Row>
   );
